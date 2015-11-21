@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "pretwa", "pretwa\pretwa.fsproj", "{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pretwa_gui", "pretwa_gui\pretwa_gui.csproj", "{9EEA533F-9292-4173-B082-A6C5335F823A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EEA533F-9292-4173-B082-A6C5335F823A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EEA533F-9292-4173-B082-A6C5335F823A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EEA533F-9292-4173-B082-A6C5335F823A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EEA533F-9292-4173-B082-A6C5335F823A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
