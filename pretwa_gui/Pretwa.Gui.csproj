@@ -7,8 +7,8 @@
     <ProjectGuid>{9EEA533F-9292-4173-B082-A6C5335F823A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>pretwa_gui</RootNamespace>
-    <AssemblyName>pretwa_gui</AssemblyName>
+    <RootNamespace>Pretwa.Gui</RootNamespace>
+    <AssemblyName>Pretwa.Gui</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -58,9 +58,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\pretwa\pretwa.fsproj">
+    <ProjectReference Include="..\pretwa\Pretwa.fsproj">
       <Project>{ab0d8186-e1d4-4f07-9d80-405c4b3250a0}</Project>
-      <Name>pretwa</Name>
+      <Name>Pretwa</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

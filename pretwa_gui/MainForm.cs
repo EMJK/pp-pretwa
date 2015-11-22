@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace pretwa_gui
+namespace Pretwa.Gui
 {
     public partial class MainForm : Form
     {

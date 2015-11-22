@@ -1,4 +1,4 @@
-﻿namespace pretwa_gui
+﻿namespace Pretwa.Gui
 {
     partial class MainForm
     {

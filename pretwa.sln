@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "pretwa", "pretwa\pretwa.fsproj", "{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Pretwa", "pretwa\Pretwa.fsproj", "{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pretwa_gui", "pretwa_gui\pretwa_gui.csproj", "{9EEA533F-9292-4173-B082-A6C5335F823A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pretwa.Gui", "pretwa_gui\Pretwa.Gui.csproj", "{9EEA533F-9292-4173-B082-A6C5335F823A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
