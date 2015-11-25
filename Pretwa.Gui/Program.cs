@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Pretwa.Gui
 {
-    class Program
+    static class Program
     {
         [STAThread]
         static void Main(string[] args)
         {
-            Application.Run(new MainForm());
+            new Application().Run(new Windows.MainWindow());
         }
     }
 }

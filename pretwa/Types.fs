@@ -6,7 +6,7 @@ namespace Pretwa
 type public FieldState =
     | Empty
     | Black
-    | White
+    | Red
 
 type public BoardState = {
     Edge : FieldState[,]

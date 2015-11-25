@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Pretwa", "pretwa\Pretwa.fsproj", "{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pretwa.Gui", "Pretwa.Gui\Pretwa.Gui.csproj", "{02A9E361-0303-438C-BE62-BB7E4A0A469D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pretwa.Gui", "pretwa_gui\Pretwa.Gui.csproj", "{9EEA533F-9292-4173-B082-A6C5335F823A}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Pretwa", "Pretwa\Pretwa.fsproj", "{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02A9E361-0303-438C-BE62-BB7E4A0A469D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02A9E361-0303-438C-BE62-BB7E4A0A469D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02A9E361-0303-438C-BE62-BB7E4A0A469D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02A9E361-0303-438C-BE62-BB7E4A0A469D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB0D8186-E1D4-4F07-9D80-405C4B3250A0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9EEA533F-9292-4173-B082-A6C5335F823A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9EEA533F-9292-4173-B082-A6C5335F823A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9EEA533F-9292-4173-B082-A6C5335F823A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9EEA533F-9292-4173-B082-A6C5335F823A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
