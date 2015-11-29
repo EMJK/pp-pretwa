@@ -16,7 +16,7 @@ module Utils =
             offset +
                 if tmpValue < 0
                 then tmpMax - abs(tmpValue % count) + 1
-                else tmpValue % offset
+                else tmpValue % count
 
         let up value (cMin, cMax) = put (value + 1) (cMin, cMax)
 
@@ -28,3 +28,11 @@ module Utils =
             let dist = abs(p1-p2)
             let count = abs(cMin-cMax) + 1
             min(dist, count - dist)
+
+    let mapMerge group1 group2 appender = 
+        group1 |> Seq.fold(fun (acc:Map<'a,'b>) (KeyValue(key, values)) -> 
+            match acc.TryFind key with
+            | Some items -> Map.add key (appender values items) acc
+            | None -> Map.add key values acc) group2
+
+    let joinMaps map1 map2 = mapMerge map1 map2 Seq.append
