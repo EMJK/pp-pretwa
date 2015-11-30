@@ -148,6 +148,11 @@ module Board =
             (nextState, nextMove)
         | _ -> failwith "Invalid move!"
 
+    let hasPlayerLost color boardState =
+        let pieces = allPieces color boardState
+        if pieces.Length <= 3 
+        then true 
+        else (validMovesForColor color boardState).Length = 0
 
     (************************************************************************)
 

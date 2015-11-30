@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting.Services;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.FSharp.Collections;
@@ -12,39 +14,65 @@ namespace Pretwa.Gui
 {
     class VisualState
     {
-        private readonly FSharpMap<FieldCoords, FieldState> _State;
-        private readonly FSharpList<Tuple<FieldCoords, FSharpOption<FieldCoords>, FieldCoords>> _ValidMoves;
+        private FSharpMap<FieldCoords, FieldState> _State;
+        private FSharpList<Tuple<FieldCoords, FSharpOption<FieldCoords>, FieldCoords>> _ValidMoves;
         private int _CanvasSize = 700;
         private int _LineSize = 100;
         private int _FieldSize = 20;
+        private Form f;
+        private PictureBox p;
 
-        public VisualState(FSharpMap<FieldCoords, FieldState> state, FSharpList<Tuple<FieldCoords, FSharpOption<FieldCoords>, FieldCoords>> validMoves)
+        public event Action EnterPressed;
+
+        public void Show()
         {
-            _State = state;
-            _ValidMoves = validMoves;
+            ThreadPool.QueueUserWorkItem((_) =>
+            {
+                Application.Run(f);
+            });
         }
 
-        public void ShowDrawing()
+        public VisualState()
         {
-            Form f = new Form();
+            f = new Form();
             f.Size = new Size(_CanvasSize, _CanvasSize);
-            var p = new PictureBox();
+            p = new PictureBox();
             p.Size = new Size(_CanvasSize, _CanvasSize);
             f.Controls.Add(p);
             p.Dock = DockStyle.Fill;
 
-            Bitmap bmp = new Bitmap(_CanvasSize, _CanvasSize);
-            Graphics canvas = Graphics.FromImage(bmp);
+            f.KeyDown += (sender, args) =>
+            {
+                ThreadPool.QueueUserWorkItem((_) =>
+                {
+                    if ((args.KeyCode & Keys.Return) != Keys.None)
+                    {
+                        var handler = EnterPressed;
+                        if (handler != null) handler();
+                    }
+                });
+            };
+        }
 
-            DrawFields(canvas);
+        public void Draw(FSharpMap<FieldCoords, FieldState> state, FSharpList<Tuple<FieldCoords, FSharpOption<FieldCoords>, FieldCoords>> validMoves)
+        {
+            f.Invoke(new MethodInvoker(() =>
+            {
+                _State = state;
+                _ValidMoves = validMoves;
 
-            DrawPossibleMoves(canvas);
+                Bitmap bmp = new Bitmap(_CanvasSize, _CanvasSize);
+                Graphics canvas = Graphics.FromImage(bmp);
 
-            canvas.Flush();
-            canvas.Dispose();
+                DrawFields(canvas);
 
-            p.Image = bmp;
-            f.ShowDialog();
+                DrawPossibleMoves(canvas);
+
+                canvas.Flush();
+                canvas.Dispose();
+
+                p.Image = bmp;
+            }));
         }
 
         private void DrawPossibleMoves(Graphics canvas)
@@ -54,7 +82,7 @@ namespace Pretwa.Gui
             {
                 if (move.Item2 == null)
                 {
-                    DrawArrow(canvas, move.Item1, move.Item3, false);
+                    DrawLine(canvas, move.Item1, move.Item3, null);
                 }
                 else
                 {
@@ -63,13 +91,14 @@ namespace Pretwa.Gui
             }
             foreach (var move in jumps)
             {
-                DrawArrow(canvas, move.Item1, move.Item3, true);
+                DrawLine(canvas, move.Item1, move.Item3, move.Item2.Value);
             }
         }
 
-        private void DrawArrow(Graphics canvas, FieldCoords from, FieldCoords to, bool jump)
+        private void DrawLine(Graphics canvas, FieldCoords from, FieldCoords to, FieldCoords over)
         {
             Point pFrom, pTo;
+            Point pOver = Point.Empty;
             {
                 int en = from.IsCenter ? -1 : ((FieldCoords.Edge) from).Item1;
                 int fn = from.IsCenter ? -1 : ((FieldCoords.Edge) from).Item2;
@@ -80,13 +109,26 @@ namespace Pretwa.Gui
                 int fn = to.IsCenter ? -1 : ((FieldCoords.Edge)to).Item2;
                 pTo = GetFieldCoords(en, fn);
             }
+            if (over != null)
+            {
+                int en = over.IsCenter ? -1 : ((FieldCoords.Edge)over).Item1;
+                int fn = over.IsCenter ? -1 : ((FieldCoords.Edge)over).Item2;
+                pOver = GetFieldCoords(en, fn);
+            }
 
-            Pen pen = jump 
-                ? new Pen(Color.MediumPurple, 2)
-                : new Pen(Color.Orange, 6);
+                Pen pen = over != null 
+                ? new Pen(Color.DarkOrange, 3)
+                : new Pen(Color.LimeGreen, 6);
 
-
-            canvas.DrawLine(pen, pFrom, pTo);
+            if (over != null)
+            {
+                canvas.DrawLine(pen, pFrom, pOver);
+                canvas.DrawLine(pen, pOver, pTo);
+            }
+            else
+            {
+                canvas.DrawLine(pen, pFrom, pTo);
+            }
         }
 
         private void DrawFields(Graphics canvas)
@@ -131,22 +173,22 @@ namespace Pretwa.Gui
             switch (fn)
             {
                 case 0:
-                    scalar = Tuple.Create(-0.5, -h(1));
+                    scalar = Tuple.Create(-0.5, h(1));
                     break;
                 case 1:
                     scalar = Tuple.Create(-1.0, 0.0);
                     break;
                 case 2:
-                    scalar = Tuple.Create(-0.5, h(1));
+                    scalar = Tuple.Create(-0.5, -h(1));
                     break;
                 case 3:
-                    scalar = Tuple.Create(0.5, h(1));
+                    scalar = Tuple.Create(0.5, -h(1));
                     break;
                 case 4:
                     scalar = Tuple.Create(1.0, 0.0);
                     break;
                 case 5:
-                    scalar = Tuple.Create(0.5, -h(1));
+                    scalar = Tuple.Create(0.5, h(1));
                     break;
                 default:
                     throw new Exception();
@@ -156,9 +198,6 @@ namespace Pretwa.Gui
                 (int)(center.Y + (scalar.Item2 * (en + 1) * _LineSize)));
         }
 
-        private static double h(double a)
-        {
-            return (a*Math.Sqrt(3))/2.0;
-        }
+        private static double h(double a) => (a*Math.Sqrt(3))/2.0;
     }
 }
