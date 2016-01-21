@@ -18,7 +18,8 @@ namespace Pretwa.Gui
         private FSharpList<Tuple<FieldCoords, FSharpOption<FieldCoords>, FieldCoords>> _ValidMoves;
         private int _CanvasSize = 700;
         private int _LineSize = 100;
-        private int _FieldSize = 20;
+        private int _FieldSize = 60;
+        private bool _DrawLines = true;
         private Form f;
         private PictureBox p;
 
@@ -64,15 +65,51 @@ namespace Pretwa.Gui
                 Bitmap bmp = new Bitmap(_CanvasSize, _CanvasSize);
                 Graphics canvas = Graphics.FromImage(bmp);
 
+                DrawGrid(canvas);
                 DrawFields(canvas);
-
-                DrawPossibleMoves(canvas);
+                if(_DrawLines) DrawPossibleMoves(canvas);
+                DrawCoords(canvas);
 
                 canvas.Flush();
                 canvas.Dispose();
 
                 p.Image = bmp;
             }));
+        }
+
+        private void DrawCoords(Graphics canvas)
+        {
+            var center = GetFieldCoords(-1, -1);
+            var font = new Font(FontFamily.GenericSansSerif, 12.0F, FontStyle.Bold);
+            var brush = new SolidBrush(Color.Black);
+
+            canvas.DrawString("C", font, brush, center);
+            for(int en = 0; en < 3; en++)
+                for (int fn = 0; fn < 6; fn++)
+                {
+                    canvas.DrawString(String.Format("{0}{1}", en, fn), font, brush, GetFieldCoords(en, fn));
+                }
+        }
+
+        private void DrawGrid(Graphics canvas)
+        {
+            var pen = new Pen(Color.Black, 3);
+            var center = GetFieldCoords(-1, -1);
+
+            for (int fn = 0; fn < 6; fn++)
+            {
+                var to = GetFieldCoords(2, fn);
+                canvas.DrawLine(pen, center, to);
+            }
+            
+            for (int en = 0; en < 3; en++)
+            {
+                var radius = _LineSize*(en + 1);
+                var location = Point.Subtract(center, new Size(radius, radius));
+                var size = new Size(radius*2, radius*2);
+                var bounds = new Rectangle(location, size);
+                canvas.DrawEllipse(pen, bounds);
+            }
         }
 
         private void DrawPossibleMoves(Graphics canvas)
