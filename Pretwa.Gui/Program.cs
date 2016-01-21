@@ -13,15 +13,12 @@ namespace Pretwa.Gui
 {
     static class Program
     {
-        static AutoResetEvent handle = new AutoResetEvent(false);
         [STAThread]
         static void Main(string[] args)
         {
             var gui = new VisualState();
             var state = Board.defaultBoardState;
             var nextmove = Board.getPlayer;
-            var color = Board.getColor;
-            gui.EnterPressed += () => handle.Set();
             gui.Show();
 
             while (true)
@@ -106,12 +103,6 @@ namespace Pretwa.Gui
 
                 } while (nextmove.IsColor == false); 
             }
-
-        }
-
-        static void WaitForEnter()
-        {
-            handle.WaitOne();
         }
 
         private static void ShowState(FSharpMap<FieldCoords, FieldState> state, VisualState gui, NextMove nextmove)
