@@ -29,13 +29,13 @@ module Board =
     let jumpLeft (en, fn) = (makeField(en, fn - 1), makeField(en, fn - 2))
     let jumpRight (en, fn) = (makeField(en, fn + 1), makeField(en, fn + 2))
 
-    let insideBoard field = 
+    let insideBoard field =
         match field with
         | FieldCoords.Center -> true
         | FieldCoords.Edge(en,ef) -> en >= 0 && en < edgeCount && ef >= 0 && ef < edgeLength
 
     let outOfBoard field = insideBoard field |> not
-    
+
     let fieldState field (boardState: BoardState) =
         boardState.Item field
 
@@ -54,7 +54,7 @@ module Board =
         if outOfBoard field then failwith "Out of board!"
         match field with
         | FieldCoords.Center -> [0..maxField] |> List.map (fun x -> (FieldCoords.Edge(0,x), FieldCoords.Edge(1,x)))
-        | FieldCoords.Edge(en, ef) -> 
+        | FieldCoords.Edge(en, ef) ->
             [jumpUp (en, ef)] @
             [jumpDown (en, ef)] @
             [jumpLeft (en, ef)] @
@@ -96,31 +96,31 @@ module Board =
 
     let validWalkMovesForColor color boardState =
         let pieces = allPieces color boardState
-        let jumpsAvailable = 
+        let jumpsAvailable =
             allPieces color boardState
-            |> List.exists (fun field -> 
+            |> List.exists (fun field ->
                 match validJumpMovesForField field boardState with
                 | [] -> false
                 | _ -> true)
-        if jumpsAvailable 
-            then [] 
-            else 
-                pieces 
+        if jumpsAvailable
+            then []
+            else
+                pieces
                 |> List.map (fun field -> (validWalkMovesForField field boardState) |> List.map (fun dst -> (field, dst)))
                 |> List.concat
 
-    let validMovesForColor color boardState = 
+    let validMovesForColor color boardState =
         let pieces = allPieces color boardState
         let walkMoves = validWalkMovesForColor color boardState
         match walkMoves with
-        | [] -> 
-            validJumpMovesForColor color boardState 
+        | [] ->
+            validJumpMovesForColor color boardState
             |> List.map (fun (src, mid, dst) -> (src, Some mid, dst))
-        | _ -> 
+        | _ ->
             walkMoves
             |> List.map(fun (src, dst) -> (src, None, dst))
 
-    (*let allValidMoves boardState = 
+    (*let allValidMoves boardState =
         (validMovesForColor (FieldState.Color(Player.Black)) boardState) @
         (validMovesForColor (FieldState.Color(Player.Red)) boardState)*)
 
@@ -138,30 +138,29 @@ module Board =
 
     let getField (Piece p) = p
 
-    let allValidMoves nextMove boardState = 
-        let validmoves  = 
-            if isColor(nextMove) && isBlack(nextMove) 
-            then (validMovesForColor (FieldState.Color(Player.Black)) boardState) 
-            elif isColor(nextMove) 
-            then (validMovesForColor (FieldState.Color(Player.Red)) boardState) 
+    let allValidMoves nextMove boardState =
+        let validmoves  =
+            if isColor(nextMove) && isBlack(nextMove)
+            then (validMovesForColor (FieldState.Color(Player.Black)) boardState)
+            elif isColor(nextMove)
+            then (validMovesForColor (FieldState.Color(Player.Red)) boardState)
             else (validMovesForField (getField nextMove) boardState)
         (validmoves)
-            
 
     let isValidMove ffrom fto boardState =
         validMovesForField ffrom boardState
         |> List.exists (fun (f1, _, f3) -> f1 = ffrom && f3 = fto)
 
     let applyMove ffrom fto boardState =
-        let color = 
+        let color =
             match fieldState ffrom boardState with
             | FieldState.Color c -> c
             | Empty -> failwith "Invalid move!"
         match validMovesForField ffrom boardState |> List.where (fun (f1, _, f2) -> f2 = fto) with
         | [(f1, None, f2)] ->
             let nextState =
-                boardState 
-                |> Map.add ffrom FieldState.Empty 
+                boardState
+                |> Map.add ffrom FieldState.Empty
                 |> Map.add fto (FieldState.Color color)
                 //|> (fun bs -> (bs, (NextMove.Color color)))
             let nextMove = NextMove.Color( otherPlayer color)
@@ -181,93 +180,91 @@ module Board =
 
     let getFirstFromTuple tuple1 =
         match tuple1 with
-        | (a, b, c) -> 
+        | (a, b, c) ->
             let first = a
             (first)
 
-    let getThirdElementFromTuple tuple2 = 
+    let getThirdElementFromTuple tuple2 =
         match tuple2 with
-        | (a, b, c) -> 
+        | (a, b, c) ->
             let third = c
             (third)
 
     let hasPlayerLost color boardState =
         let pieces = allPieces color boardState
-        if pieces.Length <= 3 
-        then true 
+        if pieces.Length <= 3
+        then true
         else (validMovesForColor color boardState).Length = 0
 
     let getPlayer =
         let nextmove :NextMove = NextMove.Color(Player.Black)
         (nextmove)
 
-    let getColor = 
+    let getColor =
         let fieldstate = FieldState.Color(Player.Black)
         (fieldstate)
 
-    let otherColor color = 
+    let otherColor color =
         match color with
         | FieldState.Color(Player.Black) -> FieldState.Color(Player.Red)
         | FieldState.Color(Player.Red) -> FieldState.Color(Player.Black)
 
-
-    let colorInNextMove nextMove (boardState:BoardState) = 
+    let colorInNextMove nextMove (boardState:BoardState) =
         match nextMove with
         | NextMove.Color(Player.Red) -> Player.Red
         | NextMove.Color(Player.Black) -> Player.Black
-        | NextMove.Piece(nextMove) -> 
+        | NextMove.Piece(nextMove) ->
             let fs = boardState.[nextMove]
             match fs with
             | FieldState.Color(fs) -> fs
 
-    let estimateFunction color boardState = 
+    let estimateFunction color boardState =
         let baseValue = 10
         let myPieces = (allPieces color boardState).Length * 2
         let oppositePieces = (allPieces (otherColor color) boardState).Length * 2
         let value1 = myPieces - oppositePieces
         let jumpsAvailable = validJumpMovesForColor color boardState
         let value2 = jumpsAvailable.Length * 5
-        let oppositeColor = otherColor color     
+        let oppositeColor = otherColor color
         let winning = hasPlayerLost oppositeColor boardState
         let value3 = if winning then 50 else 0
         let losing = hasPlayerLost color boardState
-        let estimatedValue = 
-            if losing 
-            then 0 
+        let estimatedValue =
+            if losing
+            then 0
             elif color = FieldState.Color(Player.Red) then value1 + value2 + value3 + baseValue
             else ((value1 + value2 + value3 + baseValue) * (-1) + 25)
-        (estimatedValue)  
-  
-    let getMovesList nextMove color boardState= 
+        (estimatedValue)
+
+    let getMovesList nextMove color boardState=
         match nextMove with
             | NextMove.Color(_) ->
-                (validMovesForColor color boardState)    
+                (validMovesForColor color boardState)
             | NextMove.Piece(_) ->
                 let fieldcoord = getField nextMove
-                (validMovesForField fieldcoord boardState)  
+                (validMovesForField fieldcoord boardState)
 
-    let getNextSituation move boardState = 
+    let getNextSituation move boardState =
         let ffrom = getFirstFromTuple move
         let tto = getThirdElementFromTuple move
         let nextSituation = applyMove ffrom tto boardState
-        (nextSituation)   
+        (nextSituation)
 
-    let rec shannonFunction boardState nextMove level = 
+    let rec shannonFunction boardState nextMove level =
         let color = colorInNextMove nextMove boardState
         if level = 0 || hasPlayerLost (FieldState.Color(Player.Black)) boardState || hasPlayerLost (FieldState.Color(Player.Red)) boardState
         then (estimateFunction (FieldState.Color(color)) boardState)
         else
             let moves = getMovesList nextMove (FieldState.Color(color)) boardState
             let listOfValues = [for move in moves do
-                                let nextSit = getNextSituation move boardState             
+                                let nextSit = getNextSituation move boardState
                                 yield (shannonFunction (fst(nextSit)) (snd(nextSit)) (level-1))]
             if color = Player.Red
-            then 
+            then
                 (List.max listOfValues)
             else
                 (List.min listOfValues)
-        
- 
+
     let moveOfTheComputer boardState nextMove =
         let movesComp = getMovesList nextMove (FieldState.Color(Player.Red)) boardState
         let level = 3
@@ -282,7 +279,7 @@ module Board =
         let moveComp = fst maxX
         let moveFrom = getFirstFromTuple moveComp
         let moveTo = getThirdElementFromTuple moveComp
-        (applyMove moveFrom moveTo boardState)
+        (moveFrom, moveTo)
 
     (************************************************************************)
 

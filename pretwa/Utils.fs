@@ -2,13 +2,13 @@
 module Utils =
     let oneof list item = List.exists(fun x -> x = item) list
 
-    let cartesian set1 set2 = 
+    let cartesian set1 set2 =
         [for x in set1 do // pętla...
             for y in set2 do // w pętli
                 yield (x,y)] // zwracamy wszystkie możliwe pary
 
     module Circle =
-        let put value (cMin, cMax) = 
+        let put value (cMin, cMax) =
             let offset = cMin
             let tmpMax = cMax - offset
             let count = cMax - cMin + 1
@@ -29,8 +29,8 @@ module Utils =
             let count = abs(cMin-cMax) + 1
             min(dist, count - dist)
 
-    let mapMerge group1 group2 appender = 
-        group1 |> Seq.fold(fun (acc:Map<'a,'b>) (KeyValue(key, values)) -> 
+    let mapMerge group1 group2 appender =
+        group1 |> Seq.fold(fun (acc:Map<'a,'b>) (KeyValue(key, values)) ->
             match acc.TryFind key with
             | Some items -> Map.add key (appender values items) acc
             | None -> Map.add key values acc) group2

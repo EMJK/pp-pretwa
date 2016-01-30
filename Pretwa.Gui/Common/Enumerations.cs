@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pretwa.Gui.Common
 {
-    public enum GameMode
+    [Flags]
+    public enum FieldDrawType
     {
-        SinglePlayer,
-        MultiPlayer
+        Default = 0,
+        Highlighted = 1,
+        Selected = 2
     }
 }
