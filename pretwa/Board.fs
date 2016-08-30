@@ -175,20 +175,13 @@ module Board =
             (nextState, nextMove)
         | _ -> failwith "Invalid move!"
 
-   // let getRandListElement list (rng : Random)  =
-   //     List.item list (rng.Next(List.length list))
-
     let getFirstFromTuple tuple1 =
         match tuple1 with
-        | (a, b, c) ->
-            let first = a
-            (first)
+        | (a, b, c) -> a
 
-    let getThirdElementFromTuple tuple2 =
+    let getThirdFromTuple tuple2 =
         match tuple2 with
-        | (a, b, c) ->
-            let third = c
-            (third)
+        | (a, b, c) -> c
 
     let hasPlayerLost color boardState =
         let pieces = allPieces color boardState
@@ -214,8 +207,7 @@ module Board =
         | NextMove.Color(Player.Red) -> Player.Red
         | NextMove.Color(Player.Black) -> Player.Black
         | NextMove.Piece(nextMove) ->
-            let fs = boardState.[nextMove]
-            match fs with
+            match boardState.[nextMove] with
             | FieldState.Color(fs) -> fs
 
     let estimateFunction color boardState =
@@ -246,7 +238,7 @@ module Board =
 
     let getNextSituation move boardState =
         let ffrom = getFirstFromTuple move
-        let tto = getThirdElementFromTuple move
+        let tto = getThirdFromTuple move
         let nextSituation = applyMove ffrom tto boardState
         (nextSituation)
 
@@ -278,7 +270,7 @@ module Board =
         printfn ""
         let moveComp = fst maxX
         let moveFrom = getFirstFromTuple moveComp
-        let moveTo = getThirdElementFromTuple moveComp
+        let moveTo = getThirdFromTuple moveComp
         (moveFrom, moveTo)
 
     (************************************************************************)
